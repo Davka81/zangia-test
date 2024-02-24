@@ -1,0 +1,47 @@
+.bg-green {
+	background-color: #44C97D;
+}
+
+.bg-gray {
+	background-color: #202020;
+}
+
+.bg-lightgray {
+	background-color: #f3f3f3;
+}
+
+.bg-black {
+	background-color: #0000000d;
+}
+
+.bg-white {
+	background-color: #fff;
+}
+
+.bg-white:hover {
+	background-color: #f3f3f3;
+}
+
+.bg-avatar {
+	background-color: #9ca3af;
+}
+
+.white {
+	color: #fff;
+}
+
+.green {
+	color: #44C97D;
+}
+
+.blue {
+	color: #064E89
+}
+
+.gray {
+	color: #202020;
+}
+
+.border-gray {
+	border-color: rgb(229, 231, 235);
+}
