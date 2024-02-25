@@ -64,11 +64,11 @@ class DB extends Misc
 			$fields = [];
 			$val = [];
 			foreach ($values as $k => $v) {
-				$fields[] = trim($k);
+				$fields[] = $this->connection->real_escape_string(trim($k));
 				if ($k == 'password') {
 					$val[] = '"' . $this->passwordHash($v) . '"';
 				} else {
-					$val[] = '"' . trim($v) . '"';
+					$val[] = '"' . $this->connection->real_escape_string(trim($v)) . '"';
 				}
 			}
 			$query = "INSERT INTO {$table} (" . implode(', ', $fields) . ") VALUES (" . implode(', ', $val) . ")";
@@ -107,5 +107,13 @@ class DB extends Misc
 		} catch (Exception $e) {
 			die("Mysql Error: {$e->getMessage()}");
 		}
+	}
+
+	/*
+	* @param string $value 
+	*/
+	function real_escape_string(string $value)
+	{
+		return $this->connection->real_escape_string($value);
 	}
 }

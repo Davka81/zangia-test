@@ -22,7 +22,7 @@ require_once "{$_basedir}/inc/header.html.php";
 			</div>
 			<form action="/" method="post" class="flex flex-column">
 				<div class="form-item">
-					<input name="email" type="email" required placeholder="Email" value="<?= $user->error ? $_POST["email"] : "" ?>" />
+					<input name="emailphone" type="text" required placeholder="Email or Phone" value="<?= $user->error ? $_POST["emailphone"] : "" ?>" />
 				</div>
 				<div class="form-item relative">
 					<input name="password" type="password" required placeholder="Password" value="<?= $user->error ? $_POST["password"] : ""  ?>" />

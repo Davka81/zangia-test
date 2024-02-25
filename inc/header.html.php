@@ -16,4 +16,4 @@
 
 <body>
 	<main>
-		<div class="grid grid-cols-12">
+		<div class="grid grid-cols-12 h-full w-full">

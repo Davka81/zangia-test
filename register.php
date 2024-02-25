@@ -1,6 +1,5 @@
 <?php
 require_once "./config/config.php";
-echo "{$_basedir}/inc/header.php";
 require_once "{$_basedir}/inc/header.php";
 
 $user = new User();
@@ -32,6 +31,9 @@ require_once "{$_basedir}/inc/header.html.php";
 				</div>
 				<div class="form-item">
 					<input name="email" type="email" required placeholder="Email" value="<?= $user->error ? $_POST["email"] : "" ?>" />
+				</div>
+				<div class="form-item">
+					<input name="phone" type="tel" required placeholder="Phone" pattern="[0-9]{8}" value="<?= $user->error ? $_POST["phone"] : "" ?>" />
 				</div>
 				<div class="form-item relative">
 					<input name="password" type="password" required placeholder="Password" value="<?= $user->error ? $_POST["password"] : ""  ?>" />

@@ -19,8 +19,8 @@ $menu = [
 		"type" => [1, 2]
 	],
 	[
-		"url" => "test.php",
-		"title" => "Test",
+		"url" => "lessons.php",
+		"title" => "Lessons",
 		"type" => [1, 2]
 	],
 	[

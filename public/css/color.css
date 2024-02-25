@@ -45,3 +45,11 @@
 .border-gray {
 	border-color: rgb(229, 231, 235);
 }
+
+.border-lightgray {
+	border-color: #f0f0f0;
+}
+
+.border-eee {
+	border-color: #eee
+}

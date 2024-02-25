@@ -1,5 +1,5 @@
 <?php
-class User extends Misc
+class Lesson extends Misc
 {
 	private $db;
 	public $error = false;
