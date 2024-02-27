@@ -44,4 +44,13 @@ class Session
 	{
 		session_unset();
 	}
+
+  function show_modal()
+  {
+    echo "<script>\n";
+    echo "document.addEventListener('DOMContentLoaded', function () {
+			modalToggle();
+		})\n";
+    echo "</script>\n";
+  }
 }

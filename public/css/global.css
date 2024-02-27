@@ -96,6 +96,10 @@ main {
 	width: 340px;
 }
 
+.w-540 {
+	width: 540px;
+}
+
 .hide {
 	display: none !important;
 }

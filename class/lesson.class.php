@@ -1,135 +1,156 @@
 <?php
 class Lesson extends Misc
 {
-	private $db;
-	public $error = false;
+  private $db;
+  public $error = false;
 
-	function __construct()
-	{
-		global $db;
-		$this->db = $db;
-	}
+  function __construct()
+  {
+    global $db;
+    $this->db = $db;
+  }
 
-	function login()
-	{
-		$this->session_clear();
-		$this->error = false;
-		if (!empty($_POST)) {
-			$val = $this->db->real_escape_string(trim($_POST['emailphone']));
+  function create()
+  {
+    $this->session_clear();
+    $this->error = false;
 
-			$user = $this->db->query_select('users', '*', "email = '{$val}'");
-			if (array_key_exists('password', $user) && password_verify(trim($_POST['password']), $user['password'])) {
-				unset($user['password']);
-				$this->session_write('user', $user);
-				$this->clear_post();
-				header("Location: /page/dashboard.php");
-			}
+    if (!empty($_POST)) {
+      $name = $this->db->real_escape_string(trim($_POST['name']));
 
-			$user = $this->db->query_select('users', '*', "phone = '{$val}'");
-			if (array_key_exists('password', $user) && password_verify(trim($_POST['password']), $user['password'])) {
-				unset($user['password']);
-				$this->session_write('user', $user);
-				$this->clear_post();
-				header("Location: /page/dashboard.php");
-			}
+      $row = $this->db->query_select("lesson", "*", "name = '{$name}'");
 
-			$this->error = true;
-			$this->session_write('title', 'Error');
-			$this->session_write('description', 'Email, Phone or Password is incorrect');
-			$this->needModal(true);
-			return;
-		}
-	}
+      if ($row) {
+        $this->error = true;
+        $this->session_write('show_modal', 1);
+        $this->session_write("title", "Error");
+        $this->session_write("description", "A lesson with this name has been registered. Please choose name");
 
-	function logout()
-	{
-		$this->session_destroy();
-		$this->clear_post();
-		header("Location: /");
-	}
+        return;
+      }
 
-	function register()
-	{
-		$this->session_clear();
-		$this->error = false;
-		if (!empty($_POST)) {
-			$email = trim($_POST['email']);
-			$row = $this->db->query_select("users", "*", "email = '{$email}'");
+      $res = $this->upload_file($_FILES['image'], 'image');
 
-			if ($row) {
-				$this->error = true;
-				$this->session_write("title", "Error");
-				$this->session_write("description", "Your {$email} already registered. Please choose another email or reset you password using current email");
-				$this->needModal(true);
-				return;
-			}
+      if ($res['error'] == 1) {
+        $this->error = true;
+        $this->session_write('show_modal', 1);
+        $this->session_write("title", "Error");
+        $this->session_write("description", $res["message"]);
 
-			$phone = trim($_POST['phone']);
-			$row = $this->db->query_select("users", "*", "phone = '{$phone}'");
+        return;
+      }
 
-			if ($row) {
-				$this->error = true;
-				$this->session_write("title", "Error");
-				$this->session_write("description", "Your {$phone} already registered. Please choose another phone number or reset you password.");
-				$this->needModal(true);
-				return;
-			}
+      $data["name"] = trim($_POST['name']);
+      $data["image"] = $res['message'];
+      $data['owner'] = $this->session_read('user')['id'];
 
-			if (trim($_POST["password"]) != trim($_POST["password-repeat"])) {
-				$this->error = true;
-				$this->session_write("title", "Error");
-				$this->session_write("description", "Your password is not same");
-				$this->needModal(true);
-				return;
-			}
+      $user = $this->db->query_insert("lesson", $data);
+      if ($user) {
+        $this->session_write('show_modal', 1);
+        $this->session_write("title", "Success");
+        $this->session_write("description", "Lesson Registration Complete");
+        $this->session_write("click", "urlChange('/page/lessons.php')");
 
-			unset($_POST["password-repeat"]);
-			$_POST["role"] = 2;
-			$user = $this->db->query_insert("users", $_POST);
-			if ($user) {
-				$this->session_write("title", "Success");
-				$this->session_write("description", "Your Registration Complete");
-				$this->session_write("click", "urlChange('/')");
-				$this->needModal(true);
-				return;
-			}
+        return;
+      }
 
-			$this->error = true;
-			$this->session_write("title", "Error");
-			$this->session_write("description", "We can not register you. Please try again later");
-			$this->session_write("click", "urlChange('/')");
-			$this->needModal(true);
-			return;
-		}
+      return;
+    }
+  }
 
-		return;
-	}
+  function read()
+  {
+    return $this->db->query_select('lesson', "*");
+  }
 
-	function forget()
-	{
-		$this->session_clear();
-		if (!empty($_POST)) {
-			$this->needModal(true);
-		}
-	}
+  /*
+	* @param int $id lesson id
+	*/
+  function get($id)
+  {
+    return $this->db->query_select('lesson', "*", "id='{$id}'");
+  }
 
-	/*
+  function register()
+  {
+    $this->session_clear();
+    $this->error = false;
+    if (!empty($_POST)) {
+      $email = trim($_POST['email']);
+      $row = $this->db->query_select("users", "*", "email = '{$email}'");
+
+      if ($row) {
+        $this->error = true;
+        $this->session_write("title", "Error");
+        $this->session_write("description", "Your {$email} already registered. Please choose another email or reset you password using current email");
+
+        return;
+      }
+
+      $phone = trim($_POST['phone']);
+      $row = $this->db->query_select("users", "*", "phone = '{$phone}'");
+
+      if ($row) {
+        $this->error = true;
+        $this->session_write("title", "Error");
+        $this->session_write("description", "Your {$phone} already registered. Please choose another phone number or reset you password.");
+
+        return;
+      }
+
+      if (trim($_POST["password"]) != trim($_POST["password-repeat"])) {
+        $this->error = true;
+        $this->session_write("title", "Error");
+        $this->session_write("description", "Your password is not same");
+
+        return;
+      }
+
+      unset($_POST["password-repeat"]);
+      $_POST["role"] = 2;
+      $user = $this->db->query_insert("users", $_POST);
+      if ($user) {
+        $this->session_write("title", "Success");
+        $this->session_write("description", "Your Registration Complete");
+        $this->session_write("click", "urlChange('/')");
+
+        return;
+      }
+
+      $this->error = true;
+      $this->session_write("title", "Error");
+      $this->session_write("description", "We can not register you. Please try again later");
+      $this->session_write("click", "urlChange('/')");
+
+      return;
+    }
+
+    return;
+  }
+
+  function forget()
+  {
+    $this->session_clear();
+    if (!empty($_POST)) {
+    }
+  }
+
+  /*
 	* @param bool $is_admin check page permission
 	*/
-	function check_login_permission(bool $is_admin = false)
-	{
-		$this->session_clear();
-		$logged_user = $this->session_read('user');
-		if (!$logged_user) {
-			header("Location: /");
-		}
+  function check_login_permission(bool $is_admin = false)
+  {
+    $this->session_clear();
+    $logged_user = $this->session_read('user');
+    if (!$logged_user) {
+      header("Location: /");
+    }
 
-		if ($is_admin && $logged_user['role'] != 1) {
-			$this->error = true;
-			$this->session_write('title', 'Access Deniad');
-			$this->session_write('description', 'You do not have permission');
-			$this->session_write('click', 'urlChange(\'/page/dashboard.php\')');
-			$this->needModal(true);
-		}
-	}
+    if ($is_admin && $logged_user['role'] != 1) {
+      $this->error = true;
+      $this->session_write('title', 'Access Deniad');
+      $this->session_write('description', 'You do not have permission');
+      $this->session_write('click', 'urlChange(\'/page/dashboard.php\')');
+    }
+  }
 }

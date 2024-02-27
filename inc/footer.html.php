@@ -15,8 +15,8 @@
 	</div>
 </div>
 <?php
-if (isset($user) && $user->showModal) {
-	$user->show_modal();
+if ($session->session_read('show_modal') == 1) {
+	$session->show_modal();
 }
 ?>
 </body>

@@ -45,8 +45,7 @@ class DB extends Misc
 				echo $query . "<br />";
 			}
 			$result = $this->connection->query($query);
-			$data = $result->fetch_all(MYSQLI_ASSOC);
-			return count($data) === 1 ? $data[0] : $data;
+			return $result->fetch_all(MYSQLI_ASSOC);
 		} catch (Exception $e) {
 			die("Mysql Error: {$e->getMessage()}");
 		}
